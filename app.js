@@ -22,7 +22,8 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
     diceDOM.style.display = 'block';
     diceDOM.src = 'dice-' + dice + '.png';
     if(dice === prevDice[0] && dice === 6){
-      prevDice.pop();
+      scores[activePlayer] = 0;
+      document.querySelector('#score-' + activePlayer).textContent = '0';
       nextPlayer()
       console.log('2 6 in a row!');
     }
@@ -41,7 +42,12 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
    if (gamePlaying){
      scores[activePlayer] += roundScores;
      document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
-     if(scores[activePlayer] >= document.getElementById("winningScore").value){
+     var input = document.getElementById("winningScore").value;
+     if (!input){
+       input = 20;
+     }
+     
+     if(scores[activePlayer] >= input){
       document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
       document.querySelector('.dice').style.display = 'none';
       document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
