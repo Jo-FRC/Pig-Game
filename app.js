@@ -7,20 +7,30 @@ GAME RULES:
 - The first player to reach 100 points on GLOBAL score wins the game
 */
 
-var scores, roundScores, activePlayer, gamePlaying;
+var scores, roundScores, activePlayer, gamePlaying, prevDice;
 
 init();
 
-
+ 
 document.querySelector('.btn-roll').addEventListener('click', function(){
   if (gamePlaying){
+    if(prevDice.length > 1){
+      prevDice.shift();
+    }
     var dice = Math.floor(Math.random() * 6) +1;
     var diceDOM = document.querySelector('.dice');
     diceDOM.style.display = 'block';
     diceDOM.src = 'dice-' + dice + '.png';
-    if(dice !== 1) {
+    if(dice === prevDice[0] && dice === 6){
+      prevDice.pop();
+      nextPlayer()
+      console.log('2 6 in a row!');
+    }
+    else if(dice !== 1) {
       roundScores += dice;
       document.querySelector('#current-' + activePlayer).textContent = roundScores;
+      prevDice.push(dice);
+      console.log(prevDice);
     } else {
       nextPlayer();
     }
@@ -31,7 +41,7 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
    if (gamePlaying){
      scores[activePlayer] += roundScores;
      document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
-     if(scores[activePlayer] >= 100){
+     if(scores[activePlayer] >= document.getElementById("winningScore").value){
       document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
       document.querySelector('.dice').style.display = 'none';
       document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
@@ -49,6 +59,7 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
    scores = [0,0];
    roundScores = 0;
    activePlayer = 0;
+   prevDice = [];
    gamePlaying = true;
    document.querySelector('.dice').style.display = 'none';
 
@@ -66,6 +77,7 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
  }
 
  function nextPlayer(){
+   prevDice = [];
    activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
    roundScores = 0;
    document.getElementById('current-0').textContent = '0';
